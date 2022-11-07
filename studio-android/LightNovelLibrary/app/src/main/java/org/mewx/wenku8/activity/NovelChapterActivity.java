@@ -67,7 +67,7 @@ public class NovelChapterActivity extends BaseMaterialActivity {
             final RelativeLayout btn = rl.findViewById(R.id.chapter_btn);
             // added indicator for last read chapter
             if (rs != null && rs.cid == ci.cid) {
-                btn.setBackgroundColor(Color.LTGRAY);
+                btn.setBackgroundColor(Color.parseColor("#666666"));
             }
             btn.setOnClickListener(ignored -> {
                 // jump to reader activity

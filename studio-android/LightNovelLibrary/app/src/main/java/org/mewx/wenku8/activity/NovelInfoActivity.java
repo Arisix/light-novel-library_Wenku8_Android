@@ -733,7 +733,7 @@ public class NovelInfoActivity extends BaseMaterialActivity {
         final RelativeLayout btn = rl.findViewById(R.id.chapter_btn);
         // added indicator for last read volume
         if (rs != null && rs.vid == vl.vid) {
-          btn.setBackgroundColor(Color.LTGRAY);
+            btn.setBackgroundColor(Color.parseColor("#666666"));
         }
         btn.setOnLongClickListener(v -> {
           new MaterialDialog.Builder(NovelInfoActivity.this)

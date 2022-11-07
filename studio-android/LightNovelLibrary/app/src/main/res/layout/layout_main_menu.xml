@@ -3,11 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/default_white"
+    android:background="@color/menu_background"
     android:clickable="true"
     android:elevation="8dp"
     android:focusable="true">
 
+    <!-- Bottom Part -->
     <ScrollView
         android:id="@+id/main_menu_list_layout"
         android:layout_width="match_parent"
@@ -34,42 +35,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/user_avatar"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginBottom="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_noavatar"
-                app:layout_constraintBottom_toTopOf="@id/user_name"
-                app:layout_constraintStart_toStartOf="@id/user_name"
-                app:riv_border_color="@color/default_white"
-                app:riv_border_width="2dp"
-                app:riv_corner_radius="24dp"
-                app:riv_mutate_background="true"
-                app:riv_oval="true" />
-
-            <TextView
-                android:id="@+id/user_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginLeft="24dp"
-                android:layout_marginBottom="12dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:shadowColor="#000"
-                android:shadowDx="3.0"
-                android:shadowDy="3.0"
-                android:shadowRadius="2.0"
-                android:text="@string/main_menu_not_login"
-                android:textColor="@color/avatar_text"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@id/bg_img"
-                app:layout_constraintLeft_toLeftOf="@id/bg_img" />
 
             <TableLayout
                 android:layout_width="match_parent"
@@ -225,15 +190,50 @@
                         android:textSize="16sp" />
                 </TableRow>
             </TableLayout>
+
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginBottom="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:shadowColor="#000"
+                android:shadowDx="3.0"
+                android:shadowDy="3.0"
+                android:shadowRadius="2.0"
+                android:text="@string/main_menu_not_login"
+                android:textColor="@color/avatar_text"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/bg_img"
+                app:layout_constraintLeft_toLeftOf="@id/bg_img" />
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/user_avatar"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginBottom="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_noavatar"
+                app:layout_constraintBottom_toTopOf="@id/user_name"
+                app:layout_constraintStart_toStartOf="@id/user_name"
+                app:riv_border_color="@color/default_white"
+                app:riv_border_width="2dp"
+                app:riv_corner_radius="24dp"
+                app:riv_mutate_background="true"
+                app:riv_oval="true" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <!-- Bottom Part -->
     <LinearLayout
         android:id="@+id/main_menu_bottom_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/myPrimaryColor"
+        android:background="@color/menu_background"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -242,7 +242,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@color/default_white"
+            android:background="@color/menu_background"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -259,18 +259,6 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/menu_text_color" />
 
-            <TextView
-                android:id="@+id/main_menu_dark_mode_switcher"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/btn_menu_item"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center"
-                android:text="@string/main_menu_dark_mode_switcher"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="@color/menu_text_color" />
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

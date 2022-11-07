@@ -72,7 +72,6 @@ public class WenkuReaderPageView extends View {
     List<BitmapInfo> bitmapInfoList;
 
     // core variables
-    static private boolean inDayMode = true;
     final static private String sampleText = "轻";
     static private WenkuReaderLoader mLoader;
     static private WenkuReaderSettingV1 mSetting;
@@ -99,15 +98,6 @@ public class WenkuReaderPageView extends View {
 
     // view components (battery, page number, etc.)
 
-    static public boolean getInDayMode() {
-        return inDayMode;
-    }
-
-    static public boolean switchDayMode() {
-        inDayMode = !inDayMode;
-        return inDayMode;
-    }
-
     /**
      * Set view static variables, before first onDraw()
      * @param wrl loader
@@ -128,13 +118,13 @@ public class WenkuReaderPageView extends View {
             Toast.makeText(MyApp.getContext(), e.toString() + "\n可能的原因有：字体文件不在内置SD卡；内存太小字体太大，请使用简体中文字体，而不是CJK或GBK，谢谢，此功能为试验性功能；", Toast.LENGTH_SHORT).show();
         }
         textPaint = new TextPaint();
-        textPaint.setColor(getInDayMode() ? mSetting.fontColorDark : mSetting.fontColorLight);
+        textPaint.setColor(mSetting.fontColor);
         textPaint.setTextSize(LightTool.sp2px(MyApp.getContext(), (float) mSetting.getFontSize()));
         if(typeface != null) textPaint.setTypeface(typeface);
         textPaint.setAntiAlias(true);
         fontHeight = (int) textPaint.measureText(sampleText); // in "px"
         widgetTextPaint = new TextPaint();
-        widgetTextPaint.setColor(getInDayMode() ? mSetting.fontColorDark : mSetting.fontColorLight);
+        widgetTextPaint.setColor(mSetting.fontColor);
         widgetTextPaint.setTextSize(LightTool.sp2px(MyApp.getContext(), (float) mSetting.widgetTextSize));
         widgetTextPaint.setAntiAlias(true);
         widgetFontHeihgt = (int) textPaint.measureText(sampleText);
@@ -179,15 +169,6 @@ public class WenkuReaderPageView extends View {
             }
             isBackgroundSet = true;
         }
-    }
-
-    /**
-     * Reset text color, to fit day/night mode.
-     * If textPaint is null, then do nothing.
-     */
-    static public void resetTextColor() {
-        textPaint.setColor(getInDayMode() ? mSetting.fontColorDark : mSetting.fontColorLight);
-        widgetTextPaint.setColor(getInDayMode() ? mSetting.fontColorDark : mSetting.fontColorLight);
     }
 
     /**
@@ -544,20 +525,9 @@ public class WenkuReaderPageView extends View {
     }
 
     private void drawBackground(Canvas canvas) {
-        if(getInDayMode()) {
-            // day
-            if(bmdBackground != null)
-                bmdBackground.draw(canvas);
-            if(bmBackgroundYellow.getWidth() != screenSize.x || bmBackgroundYellow.getHeight() != screenSize.y)
-                bmBackgroundYellow = Bitmap.createScaledBitmap(bmBackgroundYellow, screenSize.x, screenSize.y, true);
-            canvas.drawBitmap(bmBackgroundYellow, 0, 0, null);
-        }
-        else {
-            // night
-            Paint paintBackground = new Paint();
-            paintBackground.setColor(mSetting.bgColorDark);
-            canvas.drawRect(0, 0, screenSize.x, screenSize.y, paintBackground);
-        }
+        Paint paintBackground = new Paint();
+        paintBackground.setColor(mSetting.bgColor);
+        canvas.drawRect(0, 0, screenSize.x, screenSize.y, paintBackground);
     }
 
     private void drawWidgets(Canvas canvas) {

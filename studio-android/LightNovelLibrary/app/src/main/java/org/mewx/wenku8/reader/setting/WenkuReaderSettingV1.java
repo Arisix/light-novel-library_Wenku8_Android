@@ -25,10 +25,8 @@ public class WenkuReaderSettingV1 {
     }
 
     // global settings
-    public final int fontColorLight = Color.parseColor("#32414E"); // for dark background (ARGB)
-    public final int fontColorDark = Color.parseColor("#444444"); // for light background
-    public final int bgColorLight = Color.parseColor("#CFBEB6");
-    public final int bgColorDark = Color.parseColor("#090C13");
+    public final int fontColor = Color.parseColor("#CCCCCC");
+    public final int bgColor = Color.parseColor("#333333");
     public final int widgetHeight = 24; // in "dp"
     public final int widgetTextSize = 12; // in "sp"
 

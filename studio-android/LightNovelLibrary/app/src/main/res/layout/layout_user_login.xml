@@ -31,45 +31,46 @@
                 android:id="@+id/edit_username_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="16dp"
-                android:paddingLeft="32dp"
-                android:paddingRight="32dp"
                 android:focusable="true"
-                android:focusableInTouchMode="true">
+                android:focusableInTouchMode="true"
+                android:paddingLeft="32dp"
+                android:paddingTop="16dp"
+                android:paddingRight="32dp">
 
                 <EditText
                     android:id="@+id/edit_username_or_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/login_username"
-                    android:textColor="@color/login_input_text"
-                    android:textColorHint="@color/login_hint_text"
-                    android:textColorHighlight="@color/myAccentColor"
-                    android:shadowColor="@color/myPrimaryColor"
                     android:maxLength="30"
-                    android:singleLine="true"/>
+                    android:shadowColor="@color/myPrimaryColor"
+                    android:singleLine="true"
+                    android:textColor="@color/login_input_text"
+                    android:textColorHighlight="@color/myAccentColor"
+                    android:textColorHint="@color/login_hint_text" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="8dp"
                 android:paddingLeft="32dp"
-                android:paddingRight="32dp">
+                android:paddingTop="8dp"
+                android:paddingRight="32dp"
+                app:passwordToggleTint="@color/login_input_text">
 
                 <EditText
                     android:id="@+id/edit_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/login_password"
-                    android:textColor="@color/login_input_text"
-                    android:textColorHint="@color/login_hint_text"
-                    android:textColorHighlight="@color/myAccentColor"
-                    android:textColorLink="@color/myPrimaryColor"
-                    android:singleLine="true"
-                    android:password="true"
+                    android:imeOptions="actionDone"
                     android:maxLength="30"
-                    android:imeOptions="actionDone" />
+                    android:password="true"
+                    android:singleLine="true"
+                    android:textColor="@color/login_input_text"
+                    android:textColorHighlight="@color/myAccentColor"
+                    android:textColorHint="@color/login_hint_text"
+                    android:textColorLink="@color/myPrimaryColor" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Two card buttons -->

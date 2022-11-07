@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.DisplayCutout;
 import android.view.KeyEvent;
@@ -25,16 +24,14 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.mardous.discreteseekbar.DiscreteSeekBar;
 import com.nononsenseapps.filepicker.FilePickerActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
 
-import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.mewx.wenku8.R;
 import org.mewx.wenku8.activity.BaseMaterialActivity;
 import org.mewx.wenku8.global.GlobalConfig;
@@ -56,6 +53,8 @@ import org.mewx.wenku8.util.LightTool;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 /**
  * Created by MewX on 2015/7/10.
@@ -383,12 +382,13 @@ public class Wenku8ReaderActivityV1 extends BaseMaterialActivity {
 
     class AsyncNovelContentTask extends AsyncTask<ContentValues, Integer, Wenku8Error.ErrorCode> {
         private MaterialDialog md;
+        boolean isSet;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             md = new MaterialDialog.Builder(Wenku8ReaderActivityV1.this)
-                    .theme(WenkuReaderPageView.getInDayMode() ? Theme.LIGHT : Theme.DARK)
+                    .theme(Theme.DARK)
                     .title(R.string.reader_please_wait)
                     .content(R.string.reader_engine_v1_parsing)
                     .progress(true, 0)
@@ -416,6 +416,218 @@ public class Wenku8ReaderActivityV1 extends BaseMaterialActivity {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
                 return Wenku8Error.ErrorCode.STRING_CONVERSION_ERROR;
+            }
+        }
+
+        private void Init()
+        {
+            if(!isSet) {
+                findViewById(R.id.btn_jump).setOnClickListener(new View.OnClickListener() {
+                    boolean isOpen = false;
+                    @Override
+                    public void onClick(View v) {
+                        // show jump dialog
+                        if(findViewById(R.id.reader_bot_settings).getVisibility() == View.VISIBLE
+                                || findViewById(R.id.reader_bot_seeker).getVisibility() == View.INVISIBLE) {
+                            isOpen = false;
+                            findViewById(R.id.reader_bot_settings).setVisibility(View.INVISIBLE);
+                        }
+                        if(!isOpen)
+                            findViewById(R.id.reader_bot_seeker).setVisibility(View.VISIBLE);
+                        else
+                            findViewById(R.id.reader_bot_seeker).setVisibility(View.INVISIBLE);
+                        isOpen = !isOpen;
+
+                        DiscreteSeekBar seeker = findViewById(R.id.reader_seekbar);
+                        seeker.setMin(1);
+                        seeker.setProgress(mSlidingPageAdapter.getCurrentFirstLineIndex() + 1); // bug here
+                        seeker.setMax(loader.getElementCount());
+                        seeker.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+                            @Override
+                            public void onProgressChanged(DiscreteSeekBar discreteSeekBar, int i, boolean b) { }
+
+                            @Override
+                            public void onStartTrackingTouch(DiscreteSeekBar discreteSeekBar) { }
+
+                            @Override
+                            public void onStopTrackingTouch(DiscreteSeekBar discreteSeekBar) {
+                                mSlidingPageAdapter.setCurrentIndex(discreteSeekBar.getProgress() - 1, 0);
+                                mSlidingPageAdapter.restoreState(null, null);
+                                mSlidingPageAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+                });
+                findViewById(R.id.btn_jump).setOnLongClickListener(v -> {
+                    Toast.makeText(Wenku8ReaderActivityV1.this, getResources().getString(R.string.reader_jump), Toast.LENGTH_SHORT).show();
+                    return true;
+                });
+
+                findViewById(R.id.btn_config).setOnClickListener(new View.OnClickListener() {
+                    private boolean isOpen = false;
+                    @Override
+                    public void onClick(View v) {
+                        // show jump dialog
+                        if(findViewById(R.id.reader_bot_seeker).getVisibility() == View.VISIBLE
+                                || findViewById(R.id.reader_bot_settings).getVisibility() == View.INVISIBLE) {
+                            isOpen = false;
+                            findViewById(R.id.reader_bot_seeker).setVisibility(View.INVISIBLE);
+                        }
+                        if(!isOpen)
+                            findViewById(R.id.reader_bot_settings).setVisibility(View.VISIBLE);
+                        else
+                            findViewById(R.id.reader_bot_settings).setVisibility(View.INVISIBLE);
+                        isOpen = !isOpen;
+
+                        // set all listeners
+                        DiscreteSeekBar seekerFontSize = findViewById(R.id.reader_font_size_seeker),
+                                seekerLineDistance = findViewById(R.id.reader_line_distance_seeker),
+                                seekerParagraphDistance = findViewById(R.id.reader_paragraph_distance_seeker),
+                                seekerParagraphEdgeDistance = findViewById(R.id.reader_paragraph_edge_distance_seeker);
+
+                        seekerFontSize.setProgress(setting.getFontSize());
+                        seekerFontSize.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+                            @Override
+                            public void onProgressChanged(DiscreteSeekBar discreteSeekBar, int i, boolean b) { }
+
+                            @Override
+                            public void onStartTrackingTouch(DiscreteSeekBar discreteSeekBar) { }
+
+                            @Override
+                            public void onStopTrackingTouch(DiscreteSeekBar discreteSeekBar) {
+                                setting.setFontSize(discreteSeekBar.getProgress());
+                                WenkuReaderPageView.setViewComponents(loader, setting, false);
+                                mSlidingPageAdapter.restoreState(null, null);
+                                mSlidingPageAdapter.notifyDataSetChanged();
+                            }
+                        });
+
+                        seekerLineDistance.setProgress(setting.getLineDistance());
+                        seekerLineDistance.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+                            @Override
+                            public void onProgressChanged(DiscreteSeekBar discreteSeekBar, int i, boolean b) { }
+
+                            @Override
+                            public void onStartTrackingTouch(DiscreteSeekBar discreteSeekBar) { }
+
+                            @Override
+                            public void onStopTrackingTouch(DiscreteSeekBar discreteSeekBar) {
+                                setting.setLineDistance(discreteSeekBar.getProgress());
+                                WenkuReaderPageView.setViewComponents(loader, setting, false);
+                                mSlidingPageAdapter.restoreState(null, null);
+                                mSlidingPageAdapter.notifyDataSetChanged();
+                            }
+                        });
+
+                        seekerParagraphDistance.setProgress(setting.getParagraphDistance());
+                        seekerParagraphDistance.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+                            @Override
+                            public void onProgressChanged(DiscreteSeekBar discreteSeekBar, int i, boolean b) { }
+
+                            @Override
+                            public void onStartTrackingTouch(DiscreteSeekBar discreteSeekBar) { }
+
+                            @Override
+                            public void onStopTrackingTouch(DiscreteSeekBar discreteSeekBar) {
+                                setting.setParagraphDistance(discreteSeekBar.getProgress());
+                                WenkuReaderPageView.setViewComponents(loader, setting, false);
+                                mSlidingPageAdapter.restoreState(null, null);
+                                mSlidingPageAdapter.notifyDataSetChanged();
+                            }
+                        });
+
+                        seekerParagraphEdgeDistance.setProgress(setting.getPageEdgeDistance());
+                        seekerParagraphEdgeDistance.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+                            @Override
+                            public void onProgressChanged(DiscreteSeekBar discreteSeekBar, int i, boolean b) { }
+
+                            @Override
+                            public void onStartTrackingTouch(DiscreteSeekBar discreteSeekBar) { }
+
+                            @Override
+                            public void onStopTrackingTouch(DiscreteSeekBar discreteSeekBar) {
+                                setting.setPageEdgeDistance(discreteSeekBar.getProgress());
+                                WenkuReaderPageView.setViewComponents(loader, setting, false);
+                                mSlidingPageAdapter.restoreState(null, null);
+                                mSlidingPageAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+                });
+                findViewById(R.id.btn_config).setOnLongClickListener(v -> {
+                    Toast.makeText(Wenku8ReaderActivityV1.this, getResources().getString(R.string.reader_config), Toast.LENGTH_SHORT).show();
+                    return true;
+                });
+
+                findViewById(R.id.text_previous).setOnClickListener(v -> {
+                    // goto previous chapter
+                    for (int i = 0; i < volumeList.chapterList.size(); i++) {
+                        if (cid == volumeList.chapterList.get(i).cid) {
+                            // found self
+                            if (i == 0) {
+                                // no more previous
+                                Toast.makeText(Wenku8ReaderActivityV1.this, getResources().getString(R.string.reader_already_first_chapter), Toast.LENGTH_SHORT).show();
+                            } else {
+                                // jump to previous
+                                final int i_bak = i;
+                                new MaterialDialog.Builder(Wenku8ReaderActivityV1.this)
+                                        .onPositive((dialog, which) -> {
+                                            Intent intent = new Intent(Wenku8ReaderActivityV1.this, Wenku8ReaderActivityV1.class); //VerticalReaderActivity.class);
+                                            intent.putExtra("aid", aid);
+                                            intent.putExtra("volume", volumeList);
+                                            intent.putExtra("cid", volumeList.chapterList.get(i_bak - 1).cid);
+                                            intent.putExtra("from", from); // from cloud
+                                            startActivity(intent);
+                                            overridePendingTransition(R.anim.fade_in, R.anim.hold); // fade in animation
+                                            Wenku8ReaderActivityV1.this.finish();
+                                        })
+                                        .theme(Theme.DARK)
+                                        .title(R.string.dialog_sure_to_jump_chapter)
+                                        .content(volumeList.chapterList.get(i_bak - 1).chapterName)
+                                        .contentGravity(GravityEnum.CENTER)
+                                        .positiveText(R.string.dialog_positive_yes)
+                                        .negativeText(R.string.dialog_negative_no)
+                                        .show();
+                            }
+                            break;
+                        }
+                    }
+                });
+
+                findViewById(R.id.text_next).setOnClickListener(v -> {
+                    // goto next chapter
+                    for (int i = 0; i < volumeList.chapterList.size(); i++) {
+                        if (cid == volumeList.chapterList.get(i).cid) {
+                            // found self
+                            if (i + 1 >= volumeList.chapterList.size()) {
+                                // no more previous
+                                Toast.makeText(Wenku8ReaderActivityV1.this, getResources().getString(R.string.reader_already_last_chapter), Toast.LENGTH_SHORT).show();
+                            } else {
+                                // jump to previous
+                                final int i_bak = i;
+                                new MaterialDialog.Builder(Wenku8ReaderActivityV1.this)
+                                        .onPositive((dialog, which) -> {
+                                            Intent intent = new Intent(Wenku8ReaderActivityV1.this, Wenku8ReaderActivityV1.class); //VerticalReaderActivity.class);
+                                            intent.putExtra("aid", aid);
+                                            intent.putExtra("volume", volumeList);
+                                            intent.putExtra("cid", volumeList.chapterList.get(i_bak + 1).cid);
+                                            intent.putExtra("from", from); // from cloud
+                                            startActivity(intent);
+                                            overridePendingTransition(R.anim.fade_in, R.anim.hold); // fade in animation
+                                            Wenku8ReaderActivityV1.this.finish();
+                                        })
+                                        .theme(Theme.DARK)
+                                        .title(R.string.dialog_sure_to_jump_chapter)
+                                        .content(volumeList.chapterList.get(i_bak + 1).chapterName)
+                                        .contentGravity(GravityEnum.CENTER)
+                                        .positiveText(R.string.dialog_positive_yes)
+                                        .negativeText(R.string.dialog_negative_no)
+                                        .show();
+                            }
+                            break;
+                        }
+                    }
+                });
             }
         }
 
@@ -451,7 +663,6 @@ public class Wenku8ReaderActivityV1 extends BaseMaterialActivity {
             sl.setSlider(new OverlappedSlider());
             sl.setOnTapListener(new SlidingLayout.OnTapListener() {
                 boolean barStatus = false;
-                boolean isSet = false;
 
                 @Override
                 public void onSingleTap(MotionEvent event) {
@@ -460,8 +671,8 @@ public class Wenku8ReaderActivityV1 extends BaseMaterialActivity {
                     int x = (int) event.getX();
                     int y = (int) event.getY();
 
-                    if(x > screenWidth / 3 && x < screenWidth * 2 / 3 && y > screenHeight / 3 && y < screenHeight * 2 / 3) {
-                        // first init
+                    if(x > screenWidth / 3 && x < screenWidth * 2 / 3 && y > screenHeight / 3 && y < screenHeight * 2 / 3)
+                    {
                         if(!barStatus) {
                             showNavigationBar();
                             findViewById(R.id.reader_top).setVisibility(View.VISIBLE);
@@ -473,294 +684,7 @@ public class Wenku8ReaderActivityV1 extends BaseMaterialActivity {
                             }
                             barStatus = true;
 
-                            if(!isSet) {
-                                // add action to each
-                                findViewById(R.id.btn_daylight).setOnClickListener(v -> {
-                                    // switch day/night mode
-                                    WenkuReaderPageView.switchDayMode();
-                                    WenkuReaderPageView.resetTextColor();
-                                    mSlidingPageAdapter.restoreState(null, null);
-                                    mSlidingPageAdapter.notifyDataSetChanged();
-                                });
-                                findViewById(R.id.btn_daylight).setOnLongClickListener(v -> {
-                                    Toast.makeText(Wenku8ReaderActivityV1.this, getResources().getString(R.string.reader_daynight), Toast.LENGTH_SHORT).show();
-                                    return true;
-                                });
 
-                                findViewById(R.id.btn_jump).setOnClickListener(new View.OnClickListener() {
-                                    boolean isOpen = false;
-                                    @Override
-                                    public void onClick(View v) {
-                                        // show jump dialog
-                                        if(findViewById(R.id.reader_bot_settings).getVisibility() == View.VISIBLE
-                                                || findViewById(R.id.reader_bot_seeker).getVisibility() == View.INVISIBLE) {
-                                            isOpen = false;
-                                            findViewById(R.id.reader_bot_settings).setVisibility(View.INVISIBLE);
-                                        }
-                                        if(!isOpen)
-                                            findViewById(R.id.reader_bot_seeker).setVisibility(View.VISIBLE);
-                                        else
-                                            findViewById(R.id.reader_bot_seeker).setVisibility(View.INVISIBLE);
-                                        isOpen = !isOpen;
-
-                                        DiscreteSeekBar seeker = findViewById(R.id.reader_seekbar);
-                                        seeker.setMin(1);
-                                        seeker.setProgress(mSlidingPageAdapter.getCurrentFirstLineIndex() + 1); // bug here
-                                        seeker.setMax(loader.getElementCount());
-                                        seeker.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
-                                            @Override
-                                            public void onProgressChanged(DiscreteSeekBar discreteSeekBar, int i, boolean b) { }
-
-                                            @Override
-                                            public void onStartTrackingTouch(DiscreteSeekBar discreteSeekBar) { }
-
-                                            @Override
-                                            public void onStopTrackingTouch(DiscreteSeekBar discreteSeekBar) {
-                                                mSlidingPageAdapter.setCurrentIndex(discreteSeekBar.getProgress() - 1, 0);
-                                                mSlidingPageAdapter.restoreState(null, null);
-                                                mSlidingPageAdapter.notifyDataSetChanged();
-                                            }
-                                        });
-                                    }
-                                });
-                                findViewById(R.id.btn_jump).setOnLongClickListener(v -> {
-                                    Toast.makeText(Wenku8ReaderActivityV1.this, getResources().getString(R.string.reader_jump), Toast.LENGTH_SHORT).show();
-                                    return true;
-                                });
-
-                                findViewById(R.id.btn_find).setOnClickListener(v -> {
-                                    // show label page
-                                    Toast.makeText(Wenku8ReaderActivityV1.this, "查找功能尚未就绪", Toast.LENGTH_SHORT).show();
-                                });
-                                findViewById(R.id.btn_find).setOnLongClickListener(v -> {
-                                    Toast.makeText(Wenku8ReaderActivityV1.this, getResources().getString(R.string.reader_find), Toast.LENGTH_SHORT).show();
-                                    return true;
-                                });
-
-                                findViewById(R.id.btn_config).setOnClickListener(new View.OnClickListener() {
-                                    private boolean isOpen = false;
-                                    @Override
-                                    public void onClick(View v) {
-                                        // show jump dialog
-                                        if(findViewById(R.id.reader_bot_seeker).getVisibility() == View.VISIBLE
-                                                || findViewById(R.id.reader_bot_settings).getVisibility() == View.INVISIBLE) {
-                                            isOpen = false;
-                                            findViewById(R.id.reader_bot_seeker).setVisibility(View.INVISIBLE);
-                                        }
-                                        if(!isOpen)
-                                            findViewById(R.id.reader_bot_settings).setVisibility(View.VISIBLE);
-                                        else
-                                            findViewById(R.id.reader_bot_settings).setVisibility(View.INVISIBLE);
-                                        isOpen = !isOpen;
-
-                                        // set all listeners
-                                        DiscreteSeekBar seekerFontSize = findViewById(R.id.reader_font_size_seeker),
-                                                seekerLineDistance = findViewById(R.id.reader_line_distance_seeker),
-                                                seekerParagraphDistance = findViewById(R.id.reader_paragraph_distance_seeker),
-                                                seekerParagraphEdgeDistance = findViewById(R.id.reader_paragraph_edge_distance_seeker);
-
-                                        seekerFontSize.setProgress(setting.getFontSize());
-                                        seekerFontSize.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
-                                            @Override
-                                            public void onProgressChanged(DiscreteSeekBar discreteSeekBar, int i, boolean b) { }
-
-                                            @Override
-                                            public void onStartTrackingTouch(DiscreteSeekBar discreteSeekBar) { }
-
-                                            @Override
-                                            public void onStopTrackingTouch(DiscreteSeekBar discreteSeekBar) {
-                                                setting.setFontSize(discreteSeekBar.getProgress());
-                                                WenkuReaderPageView.setViewComponents(loader, setting, false);
-                                                mSlidingPageAdapter.restoreState(null, null);
-                                                mSlidingPageAdapter.notifyDataSetChanged();
-                                            }
-                                        });
-
-                                        seekerLineDistance.setProgress(setting.getLineDistance());
-                                        seekerLineDistance.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
-                                            @Override
-                                            public void onProgressChanged(DiscreteSeekBar discreteSeekBar, int i, boolean b) { }
-
-                                            @Override
-                                            public void onStartTrackingTouch(DiscreteSeekBar discreteSeekBar) { }
-
-                                            @Override
-                                            public void onStopTrackingTouch(DiscreteSeekBar discreteSeekBar) {
-                                                setting.setLineDistance(discreteSeekBar.getProgress());
-                                                WenkuReaderPageView.setViewComponents(loader, setting, false);
-                                                mSlidingPageAdapter.restoreState(null, null);
-                                                mSlidingPageAdapter.notifyDataSetChanged();
-                                            }
-                                        });
-
-                                        seekerParagraphDistance.setProgress(setting.getParagraphDistance());
-                                        seekerParagraphDistance.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
-                                            @Override
-                                            public void onProgressChanged(DiscreteSeekBar discreteSeekBar, int i, boolean b) { }
-
-                                            @Override
-                                            public void onStartTrackingTouch(DiscreteSeekBar discreteSeekBar) { }
-
-                                            @Override
-                                            public void onStopTrackingTouch(DiscreteSeekBar discreteSeekBar) {
-                                                setting.setParagraphDistance(discreteSeekBar.getProgress());
-                                                WenkuReaderPageView.setViewComponents(loader, setting, false);
-                                                mSlidingPageAdapter.restoreState(null, null);
-                                                mSlidingPageAdapter.notifyDataSetChanged();
-                                            }
-                                        });
-
-                                        seekerParagraphEdgeDistance.setProgress(setting.getPageEdgeDistance());
-                                        seekerParagraphEdgeDistance.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
-                                            @Override
-                                            public void onProgressChanged(DiscreteSeekBar discreteSeekBar, int i, boolean b) { }
-
-                                            @Override
-                                            public void onStartTrackingTouch(DiscreteSeekBar discreteSeekBar) { }
-
-                                            @Override
-                                            public void onStopTrackingTouch(DiscreteSeekBar discreteSeekBar) {
-                                                setting.setPageEdgeDistance(discreteSeekBar.getProgress());
-                                                WenkuReaderPageView.setViewComponents(loader, setting, false);
-                                                mSlidingPageAdapter.restoreState(null, null);
-                                                mSlidingPageAdapter.notifyDataSetChanged();
-                                            }
-                                        });
-
-                                        findViewById(R.id.btn_custom_font).setOnClickListener(v1 -> new MaterialDialog.Builder(Wenku8ReaderActivityV1.this)
-                                                .theme(WenkuReaderPageView.getInDayMode() ? Theme.LIGHT : Theme.DARK)
-                                                .title(R.string.reader_custom_font)
-                                                .items(R.array.reader_font_option)
-                                                .itemsCallback((dialog, view, which, text) -> {
-                                                    switch (which) {
-                                                        case 0:
-                                                            // system default
-                                                            setting.setUseCustomFont(false);
-                                                            WenkuReaderPageView.setViewComponents(loader, setting, false);
-                                                            mSlidingPageAdapter.restoreState(null, null);
-                                                            mSlidingPageAdapter.notifyDataSetChanged();
-                                                            break;
-                                                        case 1:
-                                                            // TODO: use system UI FilePicker.
-                                                            // choose a ttf file
-                                                            Intent i = new Intent(Wenku8ReaderActivityV1.this, FilePickerActivity.class);
-                                                            i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
-                                                            i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, true);
-                                                            i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
-                                                            i.putExtra(FilePickerActivity.EXTRA_START_PATH,
-                                                                    GlobalConfig.pathPickedSave == null || GlobalConfig.pathPickedSave.length() == 0 ?
-                                                                            Environment.getExternalStorageDirectory().getPath() : GlobalConfig.pathPickedSave);
-                                                            startActivityForResult(i, 0); // choose font is 0
-                                                            break;
-                                                    }
-                                                })
-                                                .show());
-
-                                        findViewById(R.id.btn_custom_background).setOnClickListener(v12 -> new MaterialDialog.Builder(Wenku8ReaderActivityV1.this)
-                                                .theme(WenkuReaderPageView.getInDayMode() ? Theme.LIGHT : Theme.DARK)
-                                                .title(R.string.reader_custom_background)
-                                                .items(R.array.reader_background_option)
-                                                .itemsCallback((dialog, view, which, text) -> {
-                                                    switch (which) {
-                                                        case 0:
-                                                            // system default
-                                                            setting.setPageBackgroundType(WenkuReaderSettingV1.PAGE_BACKGROUND_TYPE.SYSTEM_DEFAULT);
-                                                            WenkuReaderPageView.setViewComponents(loader, setting, true);
-                                                            mSlidingPageAdapter.restoreState(null, null);
-                                                            mSlidingPageAdapter.notifyDataSetChanged();
-                                                            break;
-                                                        case 1:
-                                                            // TODO: use system UI file picker.
-                                                            // choose a image file
-                                                            Intent i = new Intent(Wenku8ReaderActivityV1.this, FilePickerActivity.class);
-                                                            i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, false);
-                                                            i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, true);
-                                                            i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
-                                                            i.putExtra(FilePickerActivity.EXTRA_START_PATH,
-                                                                    GlobalConfig.pathPickedSave == null || GlobalConfig.pathPickedSave.length() == 0 ?
-                                                                            Environment.getExternalStorageDirectory().getPath() : GlobalConfig.pathPickedSave);
-                                                            startActivityForResult(i, 1); // choose image is 1
-                                                            break;
-                                                    }
-                                                })
-                                                .show());
-                                    }
-                                });
-                                findViewById(R.id.btn_config).setOnLongClickListener(v -> {
-                                    Toast.makeText(Wenku8ReaderActivityV1.this, getResources().getString(R.string.reader_config), Toast.LENGTH_SHORT).show();
-                                    return true;
-                                });
-
-                                findViewById(R.id.text_previous).setOnClickListener(v -> {
-                                    // goto previous chapter
-                                    for (int i = 0; i < volumeList.chapterList.size(); i++) {
-                                        if (cid == volumeList.chapterList.get(i).cid) {
-                                            // found self
-                                            if (i == 0) {
-                                                // no more previous
-                                                Toast.makeText(Wenku8ReaderActivityV1.this, getResources().getString(R.string.reader_already_first_chapter), Toast.LENGTH_SHORT).show();
-                                            } else {
-                                                // jump to previous
-                                                final int i_bak = i;
-                                                new MaterialDialog.Builder(Wenku8ReaderActivityV1.this)
-                                                        .onPositive((dialog, which) -> {
-                                                            Intent intent = new Intent(Wenku8ReaderActivityV1.this, Wenku8ReaderActivityV1.class); //VerticalReaderActivity.class);
-                                                            intent.putExtra("aid", aid);
-                                                            intent.putExtra("volume", volumeList);
-                                                            intent.putExtra("cid", volumeList.chapterList.get(i_bak - 1).cid);
-                                                            intent.putExtra("from", from); // from cloud
-                                                            startActivity(intent);
-                                                            overridePendingTransition(R.anim.fade_in, R.anim.hold); // fade in animation
-                                                            Wenku8ReaderActivityV1.this.finish();
-                                                        })
-                                                        .theme(WenkuReaderPageView.getInDayMode() ? Theme.LIGHT : Theme.DARK)
-                                                        .title(R.string.dialog_sure_to_jump_chapter)
-                                                        .content(volumeList.chapterList.get(i_bak - 1).chapterName)
-                                                        .contentGravity(GravityEnum.CENTER)
-                                                        .positiveText(R.string.dialog_positive_yes)
-                                                        .negativeText(R.string.dialog_negative_no)
-                                                        .show();
-                                            }
-                                            break;
-                                        }
-                                    }
-                                });
-
-                                findViewById(R.id.text_next).setOnClickListener(v -> {
-                                    // goto next chapter
-                                    for (int i = 0; i < volumeList.chapterList.size(); i++) {
-                                        if (cid == volumeList.chapterList.get(i).cid) {
-                                            // found self
-                                            if (i + 1 >= volumeList.chapterList.size()) {
-                                                // no more previous
-                                                Toast.makeText(Wenku8ReaderActivityV1.this, getResources().getString(R.string.reader_already_last_chapter), Toast.LENGTH_SHORT).show();
-                                            } else {
-                                                // jump to previous
-                                                final int i_bak = i;
-                                                new MaterialDialog.Builder(Wenku8ReaderActivityV1.this)
-                                                        .onPositive((dialog, which) -> {
-                                                            Intent intent = new Intent(Wenku8ReaderActivityV1.this, Wenku8ReaderActivityV1.class); //VerticalReaderActivity.class);
-                                                            intent.putExtra("aid", aid);
-                                                            intent.putExtra("volume", volumeList);
-                                                            intent.putExtra("cid", volumeList.chapterList.get(i_bak + 1).cid);
-                                                            intent.putExtra("from", from); // from cloud
-                                                            startActivity(intent);
-                                                            overridePendingTransition(R.anim.fade_in, R.anim.hold); // fade in animation
-                                                            Wenku8ReaderActivityV1.this.finish();
-                                                        })
-                                                        .theme(WenkuReaderPageView.getInDayMode() ? Theme.LIGHT : Theme.DARK)
-                                                        .title(R.string.dialog_sure_to_jump_chapter)
-                                                        .content(volumeList.chapterList.get(i_bak + 1).chapterName)
-                                                        .contentGravity(GravityEnum.CENTER)
-                                                        .positiveText(R.string.dialog_positive_yes)
-                                                        .negativeText(R.string.dialog_negative_no)
-                                                        .show();
-                                            }
-                                            break;
-                                        }
-                                    }
-                                });
-                            }
                         }
                         else {
                             // show menu
@@ -775,18 +699,22 @@ public class Wenku8ReaderActivityV1 extends BaseMaterialActivity {
                             }
                             barStatus = false;
                         }
-                        return;
                     }
-
-                    if (x > screenWidth / 2) {
+                    else if (x > screenWidth / 2) {
                         gotoNextPage();
-                    } else if (x <= screenWidth / 2) {
+                    }
+                    else if (x <= screenWidth / 2) {
                         gotoPreviousPage();
                     }
+
+                    Init();
                 }
             });
             mSliderHolder.addView(sl, 0, lp);
             Log.d("MewX", "-- slider创建完毕");
+
+            isSet = false;
+            Init();
 
             // end loading dialog
             if (md != null)
@@ -809,7 +737,7 @@ public class Wenku8ReaderActivityV1 extends BaseMaterialActivity {
                                     mSlidingPageAdapter.restoreState(null, null);
                                     mSlidingPageAdapter.notifyDataSetChanged();
                                 })
-                                .theme(WenkuReaderPageView.getInDayMode() ? Theme.LIGHT : Theme.DARK)
+                                .theme(Theme.DARK)
                                 .title(R.string.reader_v1_notice)
                                 .content(R.string.reader_jump_last)
                                 .contentGravity(GravityEnum.CENTER)
@@ -845,7 +773,7 @@ public class Wenku8ReaderActivityV1 extends BaseMaterialActivity {
                                     overridePendingTransition(R.anim.fade_in, R.anim.hold); // fade in animation
                                     Wenku8ReaderActivityV1.this.finish();
                                 })
-                                .theme(WenkuReaderPageView.getInDayMode() ? Theme.LIGHT : Theme.DARK)
+                                .theme(Theme.DARK)
                                 .title(R.string.dialog_sure_to_jump_chapter)
                                 .content(volumeList.chapterList.get(i_bak + 1).chapterName)
                                 .contentGravity(GravityEnum.CENTER)
@@ -886,7 +814,7 @@ public class Wenku8ReaderActivityV1 extends BaseMaterialActivity {
                                     overridePendingTransition(R.anim.fade_in, R.anim.hold); // fade in animation
                                     Wenku8ReaderActivityV1.this.finish();
                                 })
-                                .theme(WenkuReaderPageView.getInDayMode() ? Theme.LIGHT : Theme.DARK)
+                                .theme(Theme.DARK)
                                 .title(R.string.dialog_sure_to_jump_chapter)
                                 .content(volumeList.chapterList.get(i_bak - 1).chapterName)
                                 .contentGravity(GravityEnum.CENTER)

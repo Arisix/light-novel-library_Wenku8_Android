@@ -8,13 +8,6 @@ import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +32,14 @@ import org.mewx.wenku8.global.GlobalConfig;
 import org.mewx.wenku8.util.LightCache;
 import org.mewx.wenku8.util.LightTool;
 import org.mewx.wenku8.util.LightUserSession;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 public class NavigationDrawerFragment extends Fragment {
     private static final String TAG = NavigationDrawerFragment.class.getSimpleName();
@@ -109,9 +110,6 @@ public class NavigationDrawerFragment extends Fragment {
                                 .show();
                     }
             );
-
-            mainActivity.findViewById(R.id.main_menu_dark_mode_switcher).setOnClickListener(v -> openOrCloseDarkMode());
-
         } catch (NullPointerException e) {
             Toast.makeText(mainActivity, "NullPointerException in onActivityCreated();", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
@@ -293,32 +291,6 @@ public class NavigationDrawerFragment extends Fragment {
                 setHighLightButton(R.id.main_menu_ic_config, R.id.main_menu_text_config, R.id.main_menu_config);
                 break;
         }
-    }
-
-    /**
-     * Judge whether the dark mode is open. If is open, close it; else open it.
-     */
-    private void openOrCloseDarkMode() {
-        TextView darkModeSwitcherText = mainActivity.findViewById(R.id.main_menu_dark_mode_switcher);
-        if (darkModeSwitcherText != null) {
-            // Set view background color (only works for API 16+).
-            if (Build.VERSION.SDK_INT >= 16) {
-                darkModeSwitcherText.setTextColor(getResources().getColor(
-                        fakeDarkSwitcher ?/*switch off*/ R.color.menu_text_color :/*switch on*/ R.color.menu_text_color_selected
-                ));
-                darkModeSwitcherText.setBackground(getResources().getDrawable(
-                        fakeDarkSwitcher ?/*switch off*/R.drawable.btn_menu_item :/*switch on*/R.drawable.btn_menu_item_selected
-                ));
-            } else {
-                // Fall back to old Android style.
-                darkModeSwitcherText.setTextColor(getResources().getColor(
-                        fakeDarkSwitcher ?/*switch off*/ R.color.menu_text_color :/*switch on*/ R.color.menu_item_blue
-                ));
-            }
-        }
-
-        fakeDarkSwitcher = !fakeDarkSwitcher;
-        Toast.makeText(getActivity(), "夜间模式到阅读界面去试试~", Toast.LENGTH_SHORT).show();
     }
 
     private void updateNavigationBar() {

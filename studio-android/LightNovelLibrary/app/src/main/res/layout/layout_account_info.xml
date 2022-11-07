@@ -44,87 +44,102 @@
                 android:layout_below="@id/user_avatar">
 
                 <TableRow>
+
                     <TextView
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:textStyle="bold"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="right"
-                        android:text="@string/userinfo_username"/>
+                        android:text="@string/userinfo_username"
+                        android:textColor="@color/menu_text_color"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/username"
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:paddingLeft="32dp"
-                        android:text="@string/na"/>
+                        android:text="@string/na"
+                        android:textColor="@color/menu_text_color" />
                 </TableRow>
 
                 <TableRow
                     android:layout_marginTop="8dp">
+
                     <TextView
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:textStyle="bold"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="right"
-                        android:text="@string/userinfo_nickyname"/>
+                        android:text="@string/userinfo_nickyname"
+                        android:textColor="@color/menu_text_color"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/nickname"
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:paddingLeft="32dp"
-                        android:text="@string/na"/>
+                        android:text="@string/na"
+                        android:textColor="@color/menu_text_color" />
                 </TableRow>
 
                 <TableRow
                     android:layout_marginTop="8dp">
+
                     <TextView
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:textStyle="bold"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="right"
-                        android:text="@string/userinfo_score"/>
+                        android:text="@string/userinfo_score"
+                        android:textColor="@color/menu_text_color"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/score"
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:paddingLeft="32dp"
-                        android:text="@string/na"/>
+                        android:text="@string/na"
+                        android:textColor="@color/menu_text_color" />
                 </TableRow>
 
                 <TableRow
                     android:layout_marginTop="8dp">
+
                     <TextView
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:textStyle="bold"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="right"
-                        android:text="@string/userinfo_experience"/>
+                        android:text="@string/userinfo_experience"
+                        android:textColor="@color/menu_text_color"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/experience"
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:paddingLeft="32dp"
-                        android:text="@string/na"/>
+                        android:text="@string/na"
+                        android:textColor="@color/menu_text_color" />
                 </TableRow>
 
                 <TableRow
                     android:layout_marginTop="8dp">
+
                     <TextView
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:textStyle="bold"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="right"
-                        android:text="@string/userinfo_rank"/>
+                        android:text="@string/userinfo_rank"
+                        android:textColor="@color/menu_text_color"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/rank"
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:paddingLeft="32dp"
-                        android:text="@string/na"/>
+                        android:text="@string/na"
+                        android:textColor="@color/menu_text_color" />
                 </TableRow>
             </TableLayout>
 

@@ -8,24 +8,24 @@
     <color name="default_divider">#DADADA</color>
 
     <!-- UI Color -->
-    <color name="myPrimaryColor">#4284F5</color>
-    <color name="myPrimaryDarkColor">#3870d0</color>
+    <color name="myPrimaryColor">#1E3C64</color>
+    <color name="myPrimaryDarkColor">#1E3C78</color>
     <color name="myAccentColor">#fe5151</color>
-    <color name="myDrawerBackground">#F2F2F2</color>
-    <color name="myWindowBackground">#F5F5F5</color>
-    <color name="myTextPrimaryColor">#FFFFFF</color>
+    <color name="myDrawerBackground">#2B2B2B</color>
+    <color name="myWindowBackground">#303030</color>
+    <color name="myTextPrimaryColor">#C8C8C8</color>
     <color name="mySearchToggleColor">#7F7F7F</color>
     <!-- Navigation Color is 30% black mask attack to primary color -->
     <color name="myNavigationColor">#2E5CAB</color>
     <color name="myNavigationColorWhite">#B2B2B2</color>
 
     <!-- Material Dialog Color -->
-    <color name="dlgTitleColor">#4D4D4D</color>
+    <color name="dlgTitleColor">#DDDDDD</color>
     <color name="dlgContentColor">#666666</color>
-    <color name="dlgBackgroundColor">#FAFAFA</color>
+    <color name="dlgBackgroundColor">#2B2B2B</color>
     <color name="dlgPositiveButtonColor">#3870d0</color>
     <color name="dlgNegativeButtonColor">#444444</color>
-    <color name="dlgDividerColor">#DADADA</color>
+    <color name="dlgDividerColor">#999999</color>
 
     <!-- Floating Action Button Color-->
     <color name="fabRed">#FF5252</color>
@@ -37,21 +37,21 @@
 
     <!-- Menu Item Color -->
     <color name="menu_transparent">#00FFFFFF</color>
-    <color name="menu_item_blue">#3487f4</color>
-    <color name="menu_item_blue_dark">#2F79DB</color>
-    <color name="menu_item_grey">#ffdbdbdb</color>
-    <color name="menu_item_white">#FFFFFF</color>
-    <color name="menu_background">#FFFFFF</color>
-    <color name="menu_text_color">#444444</color>
-    <color name="menu_text_color_selected">#FFFFFF</color>
-    <color name="avatar_text">#FFFFFF</color>
+    <color name="menu_item_blue">#3246C8</color>
+    <color name="menu_item_blue_dark">#1E3296</color>
+    <color name="menu_item_grey">#444444</color>
+    <color name="menu_item_white">#2D2D2D</color>
+    <color name="menu_background">#2B2B2B</color>
+    <color name="menu_text_color">#999999</color>
+    <color name="menu_text_color_selected">#DDDDDD</color>
+    <color name="avatar_text">#888888</color>
     <color name="avatar_background">#444444</color>
 
     <!-- Novel Item Color -->
-    <color name="novel_item_white">#FFFFFF</color>
-    <color name="novel_item_grey">#EAEAEA</color>
+    <color name="novel_item_white">#444444</color>
+    <color name="novel_item_grey">#444444</color>
     <color name="novel_item_title">#F44336</color>
-    <color name="novel_item_text">#444444</color>
+    <color name="novel_item_text">#DDDDDD</color>
 
     <!-- PagerSlidingTabStrip Color -->
     <color name="pager_sliding_tab_strip_indicator">#FFFFFF</color>
@@ -74,12 +74,12 @@
     </integer-array>
 
     <!-- Login UI Color -->
-    <color name="login_hint_text">#999999</color>
-    <color name="login_input_text">#4D4D4D</color>
+    <color name="login_hint_text">#DDDDDD</color>
+    <color name="login_input_text">#DDDDDD</color>
     <color name="login_line">#DBDBDB</color>
     <color name="login_line_focused">#2196F3</color>
     <color name="login_btn_white">#FFFFFF</color>
-    <color name="login_btn_dark">#444444</color>
+    <color name="login_btn_dark">#CCCCCC</color>
 
     <!-- Reader Color -->
     <color name="reader_default_bg_toolbar">#CC000000</color>
