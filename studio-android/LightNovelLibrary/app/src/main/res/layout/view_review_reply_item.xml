@@ -47,11 +47,13 @@
             android:id="@+id/hash"
             android:layout_width="wrap_content"
             android:layout_height="16dp"
-            android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
-            android:layout_toLeftOf="@id/review_reply_item_numbered_id"
+            android:layout_marginLeft="16dp"
             android:layout_toStartOf="@id/review_reply_item_numbered_id"
-            android:text="# " />
+            android:layout_toLeftOf="@id/review_reply_item_numbered_id"
+            android:text="# "
+            android:textColor="@color/dlgTitleColor"
+            android:textColorHint="@color/dlgTitleColor" />
 
         <TextView
             android:id="@+id/review_reply_item_numbered_id"
@@ -77,5 +79,7 @@
         android:layout_height="wrap_content"
         android:minLines="1"
         android:paddingTop="4dp"
-        android:text="@string/loading" />
+        android:text="@string/loading"
+        android:textColor="@color/dlgTitleColor"
+        android:textColorHint="@color/dlgTitleColor" />
 </LinearLayout>

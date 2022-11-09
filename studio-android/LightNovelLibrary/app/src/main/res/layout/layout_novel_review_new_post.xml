@@ -10,56 +10,60 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/myWindowBackground"
         android:layout_below="@id/toolbar_actionbar"
+        android:background="@color/myWindowBackground"
+        android:orientation="vertical"
         android:visibility="visible">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:focusedByDefault="true">
+            android:focusedByDefault="true"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="8dp"
+            android:textColorHint="@color/dlgTitleColor"
+            android:visibility="visible">
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/input_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/system_review_title"
-                android:textColor="@color/default_text_color_black"
-                android:textColorHint="@color/login_hint_text"
-                android:textColorHighlight="@color/myAccentColor"
-                android:shadowColor="@color/myPrimaryColor"
                 android:inputType="text"
-                android:singleLine="true"/>
+                android:shadowColor="@color/myPrimaryColor"
+                android:singleLine="true"
+                android:textColor="@color/default_text_color_black"
+                android:textColorHighlight="@color/myAccentColor"
+                android:textColorHint="@color/login_hint_text"
+                android:visibility="visible" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
             android:focusable="true"
-            android:focusableInTouchMode="true">
+            android:focusableInTouchMode="true"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="8dp"
+            android:textColorHint="@color/dlgTitleColor">
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/input_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/system_review_content"
                 android:gravity="top|start"
-                android:textColor="@color/default_text_color_black"
-                android:textColorHint="@color/login_hint_text"
-                android:textColorHighlight="@color/myAccentColor"
-                android:shadowColor="@color/myPrimaryColor"
+                android:hint="@string/system_review_content"
                 android:inputType="textMultiLine"
-                android:singleLine="false"/>
+                android:shadowColor="@color/myPrimaryColor"
+                android:singleLine="false"
+                android:textColor="@color/default_text_color_black"
+                android:textColorHighlight="@color/myAccentColor"
+                android:textColorHint="@color/login_hint_text" />
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
